@@ -1,0 +1,338 @@
+\documentclass[10pt,twocolumn,letterpaper]{article}
+
+\usepackage{statcourse}
+\usepackage{times}
+\usepackage{epsfig}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+
+
+% Include other packages here, before hyperref.
+
+% If you comment hyperref and then uncomment it, you should delete
+% egpaper.aux before re-running latex.  (Or just hit 'q' on the first latex
+% run, let it finish, and you should be clear).
+\usepackage[breaklinks=true,bookmarks=false]{hyperref}
+
+
+\statcoursefinalcopy
+
+
+\setcounter{page}{1}
+\begin{document}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% DO NOT EDIT ANYTHING ABOVE THIS LINE
+% EXCEPT IF YOU LIKE TO USE ADDITIONAL PACKAGES
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+%%%%%%%%% TITLE
+\title{\LaTeX\ Huffman Encoding for SBE201 Project Report}
+
+\author{Ahmed Hossam Mohammed 9180044\\
+{\tt\small ahmed.mohamed16@eng-st.cu.edu.eg}
+\and
+Esraa Mohammed Saeed 9180234\\
+{\tt\small esraa.mohamed99@eng-st.cu.edu.eg}
+\and
+Alaa Tarek Samir 9180289\\
+{\tt\small Alaa.mohamed99@eng-st.cu.edu.eg}
+\and
+Amira Gamal Mohammed 9180309\\
+{\tt\small amira.omar99@eng-st.cu.edu.eg}
+\and
+Sohaila Mohammed Maher 9180642 \\
+{\tt\small Sohila.mohamed99@eng-st.cu.edu.eg}
+}
+
+\maketitle
+%\thispagestyle{empty}
+
+
+
+% MAIN ARTICLE GOES BELOW
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+%%%%%%%%% BODY TEXT
+
+
+
+
+\section{Introduction}
+
+David Huffman developed the Huffman algorithm in 1951. This algorithm is mainly used for data compression (which is based on encoding data). Here is how it works, It depends on the frequency of the input data in the file. The characters, which is most generated or repeated, will take the small binary code, and the characters, which is least generated or repeated, will take the large binary code. The method of representing data is called the Huffman binary tree of nodes. It is built by a priority queue and the node with the lowest frequency is the highest priority. Here we divided the code into three main parts, the first one is to read and write PGM files, the second one is to encode the files, build the Huffman tree, and generate the compressed files, and finally the third part is to decode the new generated files to get the original PGM files.
+
+\section{Motivation}
+
+We knew about Huffman algorithm and its applications in various fields. So the topic was quite interesting for us to search for. We also thought that it is going to help us in the data base course next year. Another thing is that compressed files help greatly with space and memory problems especially, in case of huge amount of data or files like in hospitals for example.
+
+\section{Resources}
+\begin{enumerate}
+    \item $include<opencv2/opencv.hpp>$
+    This is the library we use to read/write PGM files
+    \item Using namespace cv
+    We use this line to avoid writing cv:: before imread/imwrite.
+    \item  Quazip and zlib  for improvement2
+    \item cxxopts library for improvement1
+\end{enumerate}
+
+\section{Challenges and Problems}
+\begin{enumerate}
+    \item We faced a problem that the picture “NORMAL2 -IM-1431-000.1.pgm” is the only picture, which includes comment: "#", but our code read the file line by line and expects to have a comment in the second line, width and height in the Third line. However, the other seven pictures don’t have a comment in the second line so it took the width and height as a comment.
+\begin{figure}[h]
+    \includegraphics[width=0.5\textwidth]{problem1.png}
+    \caption{Problem (1)}
+    \label{fig:my_label}
+\end{figure}
+\begin{figure}[h]
+    \includegraphics[width=0.5\textwidth]{11.png}
+    \caption{Problem (1)}
+    \label{fig:my_label}
+\end{figure}
+\item But we faced another problem, the pixel values that we put in the text file is slightly different than pixel values we get from the MATLAB.
+\begin{figure}[h]
+    \includegraphics[width=0.5\textwidth]{problem2.png}
+    \caption{Problem (2)}
+    \label{fig:my_label}
+\end{figure}
+\begin{figure}[h]
+    \includegraphics[width=0.5\textwidth]{22.jpg}
+    \caption{Problem (2)}
+    \label{fig:my_label}
+\end{figure}
+\newline
+\newline
+\newline
+\newline
+\newline
+\item At the beginning of the encoding part we faced the problem of reading the .txt files that has pixel values as the files contained taps and end lines after each row that took too much space and made it difficult to read the files.
+
+\item First our code for decoding takes 17 minutes to get an output and this output had some errors.
+\begin{figure}[h]
+    \includegraphics[width=0.5\textwidth]{problem4.jpeg}
+    \caption{Problem (4)}
+    \label{fig:my_label}
+\end{figure}
+
+\item We compared the file decoded of PGM photo number 42 with the original photo by opening them and comparing them using diffchecker,and we found that around 8000 lines are identical to the original photo but there were 451 lines addition and 51 removal.
+\begin{figure}[h]
+    \includegraphics[width=0.5\textwidth]{44.jpg}
+    \caption{Problem (5)}
+    \label{fig:my_label}
+\end{figure}
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+\item We discovered one of the problems and solved it, that the logic of the code depends on  returning  i=0 after each loop as we read the string $“code_pixels”$ char by char until we find a code that is identical to one of the codes stored in our map then cut this code from the string $”code_pixels”$ so we start each loop with index (i=0)
+but we didn’t write (i=0) at first. So, we made this adjustment and the time was still 17 mins but the additions were 50 and the removals 50. So, there that was an improvement in our code.
+\begin{figure}[h]
+    \includegraphics[width=0.5\textwidth]{55.jpg}
+    \caption{Problem (6)}
+    \label{fig:my_label}
+\end{figure}
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+\item We thought about another solution for the problem of the time. The solution was to move the index so we don’t need to use substr to cut the string $”code_pixels”$ every loop and initiate it with index zero.Now the code runs in almost two seconds but still we had 50 additions and 50 removals,and the photo we got was: “now it’s a little better than before but still needs some improvements.
+\begin{figure}[h]
+    \includegraphics[width=0.5\textwidth]{66.png}
+    \caption{Problem (7)}
+    \label{fig:my_label}
+\end{figure}
+\begin{figure}[h]
+    \includegraphics[width=0.5\textwidth]{77.png}
+    \caption{Problem (7)}
+    \label{fig:my_label}
+\end{figure}
+
+\item We looked closely to the photo to see that the (R) letter didn’t appear in any of the output photos  and that  it is 100 percent white so it should take (255) so we returned to the encoded file and discovered that there no pixel value 255 which was the equivalent code.
+So we changed all the for loops in EncodingAA.cpp ("<=255") instead of ("<255")
+\begin{figure}[h]
+    \includegraphics[width=0.5\textwidth]{8.1.jpg}
+    \caption{Problem (8)}
+    \label{fig:my_label}
+\end{figure}
+\begin{figure}[h]
+    \includegraphics[width=0.5\textwidth]{8.2.jpg}
+    \caption{Problem (8)}
+    \label{fig:my_label}
+\end{figure}
+\begin{figure}[h]
+    \includegraphics[width=0.5\textwidth]{8.3.jpg}
+    \caption{Problem (8)}
+    \label{fig:my_label}
+\end{figure}
+\newline
+\newline
+\newline
+\newline
+\end{enumerate}
+
+\section{User manual for the system}
+\begin{enumerate}
+ \item \textbf{withoutOpenCv} 
+ \begin{figure}[h]
+ \includegraphics[width=0.5\textwidth]{1.jpeg}
+ \caption{UserManual(1)}
+ \label{fig:my_label}
+\end{figure}
+\begin{figure}[h]
+ \includegraphics[width=0.5\textwidth]{2.jpeg}
+ \caption{UserManual(1)}
+ \label{fig:my_label}
+\end{figure}
+
+\item \textbf{with openCV} 
+    \begin{figure}[h]
+ \includegraphics[width=0.5\textwidth]{5.1.jpeg}
+ \caption{UserManual(2)}
+ \label{fig:my_label}
+\end{figure}
+\begin{figure}[h]
+ \includegraphics[width=0.5\textwidth]{5.2.jpeg}
+ \caption{UserManual(2)}
+ \label{fig:my_label}
+\end{figure}
+\begin{figure}[h]
+ \includegraphics[width=0.5\textwidth]{5.3.jpeg}
+ \caption{UserManual(2)}
+ \label{fig:my_label}
+\end{figure}
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+\newline
+    \item \textbf{improvement 1} 
+    \begin{figure}[h]
+ \includegraphics[width=0.5\textwidth]{3.jpeg}
+ \caption{UserManual(3)}
+ \label{fig:my_label}
+\end{figure}
+\begin{figure}[h]
+ \includegraphics[width=0.5\textwidth]{4.jpeg}
+ \caption{UserManual(3)}
+ \label{fig:my_label}
+\end{figure}
+    
+\end{enumerate}
+\section {Time Complexity}
+The time complexity is O(nlog(n)), when n is the number of the total characters.
+\section{Results}
+\begin{figure}[h]
+ \includegraphics[width=0.5\textwidth]{17.jpeg}
+ \caption{Block Diagram}
+ \label{fig:my_label}
+\end{figure}
+\begin{figure}[h]
+ \includegraphics[width=0.3\textwidth]{pp27.png}
+ \caption{(pp27.png)}
+ \label{fig:my_label}
+\end{figure}
+\begin{figure}[h]
+ \includegraphics[width=0.3\textwidth]{pp30.png}
+ \caption{(pp30.png)}
+ \label{fig:my_label}
+\end{figure}
+\begin{figure}[h]
+ \includegraphics[width=0.3\textwidth]{pp31.png}
+ \caption{(pp31.png)}
+ \label{fig:my_label}
+\end{figure}
+\begin{figure}[h]
+ \includegraphics[width=0.3\textwidth]{pp36.png}
+ \caption{(pp36.png)}
+ \label{fig:my_label}
+\end{figure}
+\begin{figure}[h]
+ \includegraphics[width=0.3\textwidth]{pp37.png}
+ \caption{(pp37.png)}
+ \label{fig:my_label}
+\end{figure}
+\begin{figure}[h]
+ \includegraphics[width=0.3\textwidth]{pp38.png}
+ \caption{(pp38.png)}
+ \label{fig:my_label}
+\end{figure}
+\begin{figure}[h]
+ \includegraphics[width=0.3\textwidth]{pp40.png}
+ \caption{(pp40.png)}
+ \label{fig:my_label}
+\end{figure}
+\begin{figure}[h]
+ \includegraphics[width=0.3\textwidth]{pp42.png}
+ \caption{(pp42.png)}
+ \label{fig:my_label}
+\end{figure}
+\newpage
+\section{Contributions}
+\begin{enumerate}
+    \item Esraa Moahmmed Saeed and Ahmed Hossam Mohammed : Responsible for the first part (reading the PGM files). 
+    \item Amira Gamal Mohammed and  Alaa Tarek Samir : Responsible for the Encoding and the compression part, and Improvement 2.2.
+    \item Ahmed Hossam Mohammed and Sohaila Mohammed Maher: responsible for the decoding part and the decompression.
+    \item Esraa Mohammed Saeed and Sohaila Mohammed Maher: responsible for writing the report the parts related to the Decoding and Improvement 2.1 .
+\end{enumerate}
+ 
+  
+ 
+{\small
+\bibliographystyle{IEEEtran}
+\bibliography{bibliography.bib}
+\begin{enumerate}
+  \item how to include cxxopts library in compiler. Stack Overflow. (2020). Retrieved 30 May 2020, from https://stackoverflow.com/questions/57068800/how-to-include-cxxopts-library-in-compiler/57069029.
+  
+  \item jarro2783/cxxopts. GitHub. (2020). Retrieved 30 May 2020, from https://github.com/jarro2783/cxxopts.
+  
+  \item (2020). Retrieved 27 May 2020, from https://www.youtube.com/watch?v=TxjlDTYgoqw.
+  
+  \item kishore-ganesh/HuffmanCompressor. GitHub. (2020). Retrieved 21 May 2020, from https://github.com/kishore-ganesh/HuffmanCompressor/blob/master/huffmancompressor.cpp.
+  
+  \item Huffman Coding (Algorithm, Example and Time complexity). Includehelp.com. (2020). Retrieved 21 May 2020, from https://www.includehelp.com/algorithms/huffman-coding-algorithm-example-and-time-complexity.aspx.
+  
+  \item Program for Decimal to Binary Conversion - GeeksforGeeks. GeeksforGeeks. (2020). Retrieved 27 May 2020, from https://www.geeksforgeeks.org/.
+  
+  \item c++, R., Montee, G., & Ammer, C. (2020). Reading bytes in c++. Stack Overflow. Retrieved 28 May 2020, from https://stackoverflow.com/.
+  
+  \item (2020). Retrieved 19 May 2020, from https://www.youtube.com/watch?.
+  
+  \item Reading and Writing Images and Video — OpenCV 2.4.13.7 documentation. Docs.opencv.org. (2020). Retrieved 23 May 2020, from https://docs.opencv.org/2.4/.
+  
+  \item (2020). Retrieved 19 May 2020, from https://www.youtube.com/watch?.
+  
+  \item Huffman Coding Compression Algorithm - Techie Delight. Techie Delight. (2020). Retrieved 22 May 2020, from https://www.techiedelight.com/huffman-coding/.
+  
+  \item (2020). Retrieved 22 May 2020, from https://www.youtube.com/watch?v=mxlcKmvMK9Q&fbclid=
+  IwAR2Di8FM8PRx85V_sqMMoRwUqf8ybN2H5tYMLAoqGsdqzVwj4Q9s0BRJKgc.
+  
+  \item (2020). Retrieved 28 May 2020, from https://www.youtube.com/watch?v=bVqVR2V3n3M&fbclid=
+  IwAR2Np854ZsOjZxyl4AeuRoiOElitqbJHb4GLK9tts0bOgOL7ldi3wUJZ1dw.
+ \end{enumerate}
+}
+
+
+\end{document}
+
